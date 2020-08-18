@@ -1,4 +1,4 @@
-from data_process import load_data, update_now
+from data_process import *
 import datetime
 from person import person
 import os
@@ -44,6 +44,7 @@ class Scheduler(object):
 
     def make_appt(self, person, time, date):
         curr_schedule = load_data()
+        date = date_to_data_form(date)
         if curr_schedule[person.club][date][time] == None:
             person_list = [person.name, person.phone, person.email]
             curr_schedule[person.club][date][time] = person_list
