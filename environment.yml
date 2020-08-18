@@ -1,0 +1,9 @@
+name: darin-scheduler
+
+channels:
+    - conda-forge
+
+dependencies:
+    - python=3.7
+    - pip:
+        - cryptography==2.6.1
