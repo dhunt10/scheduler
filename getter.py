@@ -11,3 +11,12 @@ def get_avail_times(club, date):
             open_dates.append(i)
 
     return open_dates
+
+def get_avail_dates(club):
+    open_dates = []
+    data = load_data()
+
+    for i in data[club]:
+        open_dates.append(data_from_to_date(i))
+
+    return open_dates
