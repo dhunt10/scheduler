@@ -1,0 +1,79 @@
+from flask import Flask, request, Response
+from flask_restful import Resource, Api, reqparse
+from main_class import Scheduler
+
+app = Flask(__name__)
+api = Api(app)
+
+model = Scheduler()
+
+class HealthCheck(Resource):
+
+    def get(self):
+        return {'status{}': 'alive{}'}, 200
+
+class add_day(Resource):
+
+    def __init__(self):
+        """
+
+        """
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument('day',
+                            type=str,
+                            required=True,
+                            help='what time is the appt')
+        parser.add_argument('start',
+                            type=int,
+                            required=True,
+                            help='what club is this')
+        parser.add_argument('end',
+                            type=int,
+                            required=True,
+                            help='what club is this')
+        parser.add_argument('club',
+                            type=str,
+                            required=True,
+                            help='what club is this')
+        self.parser = parser
+
+    def get(self):
+        """
+
+        :return:
+        """
+
+        args = self.parser.parse_args()
+        result = model.add_day(club=args.club, day=args.day, start=args.start, end=args.end)
+        return result
+
+class make_club(Resource):
+
+    def __init__(self):
+        """
+
+        :return:
+        """
+        parser = reqparse.RequestParser(bundle_errors=True)
+        parser.add_argument('club',
+                            type=str,
+                            required=True,
+                            help='what time is the appt')
+        self.parser = parser
+
+    def get(self):
+        """
+
+        :return:
+        """
+
+        args = self.parser.parse_args()
+        result = model.make_club(club=args.club)
+        return result
+
+api.add_resource(make_club, '/mc')
+api.add_resource(add_day, '/ad')
+api.add_resource(HealthCheck, '/healthcheck')
+
+if __name__ == '__main__':
+    app.run(host='localhost', port='7050')
