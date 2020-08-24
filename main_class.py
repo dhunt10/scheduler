@@ -3,17 +3,21 @@ import datetime
 from person import person
 import os
 
+
 class Scheduler(object):
 
     def __init__(self):
         """
 
         Initialization
-	"""
+        """
 
     def make_timeset(self, start, end):
         day = {}
-        for i in range(start, end+1):
+        if start >= end:
+            return 'Invalid Day Selection'
+
+        for i in range(start, end):
             for x in ("00","15","30","45"):
                 day[str(str(i) + ":" + str(x))] = None
 
@@ -29,18 +33,26 @@ class Scheduler(object):
         curr_schedule = load_data()
         day = self.make_day(day, start, end)
         print(curr_schedule, type(curr_schedule))
-        curr_schedule[club].update(day)
+        try:
+            curr_schedule[club].update(day)
+        except KeyError:
+            return 'Club Does Not Exist'
+
         update_now(curr_schedule)
+        return "day made on {} from {} to {} at {}".format(day, start, end, club)
 
     def make_club(self, club):
         curr_schedule = load_data()
         if curr_schedule == '':
             curr_schedule = dict()
             print("ye")
+        club = club.replace(" ", "_")
         if club not in curr_schedule:
             curr_schedule[club] = {}
-        update_now(curr_schedule)
-
+            update_now(curr_schedule)
+            return "{} has been created".format(club)
+        else:
+            return 'That club already exists, try another name'
 
     def make_appt(self, person, time, date):
         curr_schedule = load_data()
@@ -52,3 +64,34 @@ class Scheduler(object):
             return "Confirmed for {}, at {}".format(date, time)
         else:
             return "Time is no longer available"
+
+    def get_avail_times(self, club, date):
+        open_dates = []
+        data = load_data()
+
+        date = date_to_data_form(date)
+
+        try:
+            data[club][date]
+        except KeyError:
+            return []
+
+        for i in data[club][date]:
+            if data[club][date][i] == None:
+                open_dates.append(i)
+
+        return open_dates
+
+    def get_avail_dates(self, club):
+        open_dates = []
+        data = load_data()
+
+        try:
+            data[club]
+        except KeyError:
+            return []
+
+        for i in data[club]:
+            open_dates.append(data_form_to_date(i))
+
+        return open_dates
