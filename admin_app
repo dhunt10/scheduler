@@ -1,11 +1,11 @@
 from flask import Flask, request, Response
 from flask_restful import Resource, Api, reqparse
-from main_class import Scheduler
+from admin_scheduler import adminScheduler
 
 app = Flask(__name__)
 api = Api(app)
 
-model = Scheduler()
+model = adminScheduler()
 
 class HealthCheck(Resource):
 

@@ -1,4 +1,5 @@
 from data_process import *
+from helpers import *
 import datetime
 from person import person
 import os
@@ -12,54 +13,12 @@ class Scheduler(object):
         Initialization
         """
 
-    def make_timeset(self, start, end):
-        day = {}
-        if start >= end:
-            return 'Invalid Day Selection'
-
-        for i in range(start, end):
-            for x in ("00","15","30","45"):
-                day[str(str(i) + ":" + str(x))] = None
-
-        return day
-
-    def make_day(self, day, start, end):
-        time_list = self.make_timeset(start, end)
-        day = datetime.datetime.strptime(day, "%m/%d/%Y")
-        new_day = {day : time_list}
-        return new_day
-
-    def add_day(self, day, club, start, end):
-        curr_schedule = load_data()
-        day = self.make_day(day, start, end)
-        print(curr_schedule, type(curr_schedule))
-        try:
-            curr_schedule[club].update(day)
-        except KeyError:
-            return 'Club Does Not Exist'
-
-        update_now(curr_schedule)
-        return "day made on {} from {} to {} at {}".format(day, start, end, club)
-
-    def make_club(self, club):
-        curr_schedule = load_data()
-        if curr_schedule == '':
-            curr_schedule = dict()
-            print("ye")
-        club = club.replace(" ", "_")
-        if club not in curr_schedule:
-            curr_schedule[club] = {}
-            update_now(curr_schedule)
-            return "{} has been created".format(club)
-        else:
-            return 'That club already exists, try another name'
-
     def make_appt(self, person, time, date):
         curr_schedule = load_data()
         date = date_to_data_form(date)
-        if curr_schedule[person.club][date][time] == None:
+        if curr_schedule[club_name(person.club)][date][time] == None:
             person_list = [person.name, person.phone, person.email]
-            curr_schedule[person.club][date][time] = person_list
+            curr_schedule[club_name(person.club)][date][time] = person_list
             update_now(curr_schedule)
             return "Confirmed for {}, at {}".format(date, time)
         else:
@@ -70,6 +29,7 @@ class Scheduler(object):
         data = load_data()
 
         date = date_to_data_form(date)
+        club = club_name(club)
 
         try:
             data[club][date]
@@ -85,6 +45,8 @@ class Scheduler(object):
     def get_avail_dates(self, club):
         open_dates = []
         data = load_data()
+        club = club_name(club)
+
 
         try:
             data[club]
