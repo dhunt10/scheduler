@@ -112,3 +112,22 @@ class adminScheduler(object):
 
         return appts
 
+    def del_date(self, club, date):
+        data = load_data()
+
+        try:
+            data[club_name(club)].pop(date_to_data_form(date))
+
+        except KeyError:
+            return "{} is not a valid date at {}".format(date, club)
+
+    def del_club(self, club):
+        data = load_data()
+        try:
+            data.pop(club_name(club))
+        except KeyError:
+            return "No Club named {}".format(club)
+
+        return "{} has been deleted".format(club)
+
+
