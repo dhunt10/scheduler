@@ -117,9 +117,11 @@ class adminScheduler(object):
 
         try:
             data[club_name(club)].pop(date_to_data_form(date))
-
         except KeyError:
             return "{} is not a valid date at {}".format(date, club)
+
+        update_now(data)
+        return "{} has been deleted from {}".format(date, club)
 
     def del_club(self, club):
         data = load_data()
@@ -127,7 +129,5 @@ class adminScheduler(object):
             data.pop(club_name(club))
         except KeyError:
             return "No Club named {}".format(club)
-
+        update_now(data)
         return "{} has been deleted".format(club)
-
-
